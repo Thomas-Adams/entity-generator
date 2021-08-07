@@ -1,0 +1,39 @@
+#set($idType = $table.pk.javaType )
+
+#foreach($imp in $table.imports)
+    $imp
+#end
+
+#foreach($anno in $table.annotations)
+    $anno
+#end
+class $table.javaName extends BaseEntity<$idType>{
+
+
+#foreach($col in $table.columns)
+    #set($typeName = "varchar")
+    #if( $table.isForeignKey($col.name))
+        #set($fkey = $table.foreignKeysColumns.get($col.name))
+        #set($fieldName = $table.toCamelCase($fkey.columnName,$fkey.foreignTableName))
+        #if($generator.isForeignKeyUnique($fkey.tableName, $fkey.columnName))
+
+        @OneToOne
+        @JoinColumn(name="${col.name}", referencedColumnName="${fkey.foreignColumnName}"),
+        private ${generator.getJavaTypeOfForeignKey($fkey.foreignTableName)} ${fieldName};
+        #else
+        @ManyToOne
+        @JoinColumn(name="${col.name}", referencedColumnName="${fkey.foreignColumnName}"),
+        private ${generator.getJavaTypeOfForeignKey($fkey.foreignTableName)} ${fieldName};
+        #end
+    #else
+        @Column(name="$col.name"#if(!$col.nullable), nullable = $col.nullable#end #if($col.type == $typeName), length = $col.length #end)
+        private #if($col.javaType)$col.javaType#else$col.type#end $col.javaName;
+    #end
+#end
+
+#foreach($link in $generator.outgoingLinksMap.get($table.name))
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "employee")
+    private List<${link.javaType}>  ${link.foreignKey.columnName} ${link.foreignKey.foreignColumnName};
+#end
+
+}

@@ -1,0 +1,19 @@
+
+
+#set($idType = $table.pk.javaType )
+
+#foreach($imp in $table.imports)
+    $imp
+#end
+
+#foreach($anno in $table.annotations)
+    $anno
+#end
+class $table.javaNameDto extends BaseDto<$idType>{
+
+
+#foreach($col in $table.columns)
+private #if($col.javaType)$col.javaType#else$col.type#end $col.javaName;
+#end
+
+}
