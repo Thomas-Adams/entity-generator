@@ -37,7 +37,8 @@ class PrimaryKeyAccessor implements Accessor {
             sql += """ AND c.table_schema = ?"""
         }
 
-        try (Connection cnn = getConnection()) {
+        try { 
+			Connection cnn = getConnection() 
             PreparedStatement preparedStatement = cnn.prepareStatement(sql)
             preparedStatement.setString(1, tableNamePattern)
             preparedStatement.setString(2, tableNamePattern)

@@ -34,13 +34,14 @@ class ForeignKeyAccessor implements Accessor{
                 WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name=?
             """
         if (StringUtils.isNotEmpty(schemaNamePattern)) {
-            sql + """ AND tc.table_schema = ?"""
+            sql += """ AND tc.table_schema = ?"""
         }
-        try (Connection cnn = getConnection()) {
+        try {
+			Connection cnn = getConnection()
             PreparedStatement preparedStatement = cnn.prepareStatement(sql);
             preparedStatement.setString(1, tableName)
             if (StringUtils.isNotEmpty(schemaNamePattern)) {
-                preparedStatement.setString(1, schemaNamePattern)
+                preparedStatement.setString(2, schemaNamePattern)
             }
             def foreignKeys = []
             ResultSet resultSet = preparedStatement.executeQuery();

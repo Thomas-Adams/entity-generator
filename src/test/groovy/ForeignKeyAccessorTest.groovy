@@ -6,7 +6,7 @@ class ForeignKeyAccessorTest {
     @Test
     void testGetForeignKeys() {
         def foreignKeyAccessor = new ForeignKeyAccessor()
-        def foreignKeys = foreignKeyAccessor.getForeignKeysList('attribute_definition')
+        def foreignKeys = foreignKeyAccessor.getForeignKeysList('', 'public','attribute_definition')
         assert foreignKeys.size() >0
     }
 }

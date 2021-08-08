@@ -34,7 +34,6 @@ dependencies {
     implementation group: 'org.hibernate', name: 'hibernate-tools', version: '5.5.3.Final'
 
 
-    compile files('libs/database-openapi.jar','database-openapi.jar')
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 

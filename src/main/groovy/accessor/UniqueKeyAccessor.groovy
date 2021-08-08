@@ -57,7 +57,8 @@ class UniqueKeyAccessor implements Accessor{
                 ) as foo
                 WHERE constraint_type= 'u' and table_name like ?
             """
-        try (Connection cnn = getConnection()) {
+        try {
+			Connection cnn = getConnection()
             PreparedStatement preparedStatement = cnn.prepareStatement(sql);
             preparedStatement.setString(1, tableCondition)
             def uniqueKeys = []

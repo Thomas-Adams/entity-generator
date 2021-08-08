@@ -8,7 +8,7 @@ class ColumnAccessorTest {
     @Test
     void testGetColumns() {
         ColumnAccessor access = new ColumnAccessor()
-        def result = access.getGColumns("attribute_definition")
+        def result = access.getGColumns("", "public","attribute_definition", "")
         assert result.size() > 0
     }
 
