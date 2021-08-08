@@ -13,15 +13,14 @@ class ColumnAccessor implements Accessor {
         this.connection = new DatabaseAccessor().getConnection()
     }
 
-
-    def getGColumns(String name) {
+    def getGColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern ) {
         DatabaseMetaData databaseMetaData = this.connection.getMetaData()
         def types = ["TABLE"] as String[]
         def cols = []
-        def result = databaseMetaData.getColumns("", "public", name, "")
+        def result = databaseMetaData.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern)
         while (result.next()) {
             def col = new GColumn()
-            col.tableName = name
+            col.tableName = tableNamePattern
             col.name = result.getString(GColumn.COLUMN_COL_COLUMN_NAME)
             col.javaName = CaseUtils.toCamelCase(col.name, false, ['_'] as char[])
             col.nullable = result.getBoolean(GColumn.COLUMN_COL_IS_NULLABLE)

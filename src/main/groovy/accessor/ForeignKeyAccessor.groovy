@@ -1,6 +1,7 @@
 package accessor
 
 import dbobjects.GForeignKey
+import org.apache.commons.lang3.StringUtils
 
 import java.sql.Connection
 import java.sql.PreparedStatement
@@ -12,7 +13,7 @@ class ForeignKeyAccessor implements Accessor{
         init()
     }
 
-    GForeignKey[] getForeignKeysList(String tableName) {
+    GForeignKey[] getForeignKeysList(String catalog, String schemaNamePattern, String tableName) {
         def sql = """
             SELECT
                 tc.table_schema, 
@@ -30,11 +31,17 @@ class ForeignKeyAccessor implements Accessor{
                 JOIN information_schema.constraint_column_usage AS ccu
                 ON ccu.constraint_name = tc.constraint_name
                 AND ccu.table_schema = tc.table_schema
-                WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name=?;
+                WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name=?
             """
+        if (StringUtils.isNotEmpty(schemaNamePattern)) {
+            sql + """ AND tc.table_schema = ?"""
+        }
         try (Connection cnn = getConnection()) {
             PreparedStatement preparedStatement = cnn.prepareStatement(sql);
             preparedStatement.setString(1, tableName)
+            if (StringUtils.isNotEmpty(schemaNamePattern)) {
+                preparedStatement.setString(1, schemaNamePattern)
+            }
             def foreignKeys = []
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -54,6 +61,5 @@ class ForeignKeyAccessor implements Accessor{
         } catch (Exception e) {
             e.printStackTrace()
         }
-
     }
 }

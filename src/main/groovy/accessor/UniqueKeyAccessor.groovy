@@ -13,7 +13,7 @@ class UniqueKeyAccessor implements Accessor{
     }
 
 
-    GUniqueKey[] getUniqueKeys(String tableName = null) {
+    GUniqueKey[] getUniqueKeys(String catalog, String schemaNamePattern, String tableName = null) {
         def tableCondition = tableName == null ? "*" : tableName
         def sql = """
             SELECT * FROM (

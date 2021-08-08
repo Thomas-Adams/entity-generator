@@ -1,6 +1,7 @@
 package accessor
 
 import dbobjects.GPrimaryKey
+import org.apache.commons.lang3.StringUtils
 import utils.TypeMapping
 
 import java.sql.Connection
@@ -17,7 +18,7 @@ class PrimaryKeyAccessor implements Accessor {
         init()
     }
 
-    GPrimaryKey[] getPrimaryKeysList(String tableName) {
+    GPrimaryKey[] getPrimaryKeysList(String catalog, String schemaNamePattern, String tableNamePattern) {
         def sql = """
                     SELECT 
                         c.column_name, 
@@ -29,13 +30,20 @@ class PrimaryKeyAccessor implements Accessor {
                         JOIN information_schema.constraint_column_usage AS ccu USING (constraint_schema, constraint_name) 
                         JOIN information_schema.columns AS c ON c.table_schema = tc.constraint_schema
                         AND tc.table_name = c.table_name AND ccu.column_name = c.column_name
-                        WHERE constraint_type = 'PRIMARY KEY' and tc.table_name = ?;
+                        WHERE constraint_type = 'PRIMARY KEY' and tc.table_name = ?
                   """
+
+        if (StringUtils.isNotEmpty(schemaNamePattern)) {
+            sql += """ AND c.table_schema = ?"""
+        }
 
         try (Connection cnn = getConnection()) {
             PreparedStatement preparedStatement = cnn.prepareStatement(sql)
-            preparedStatement.setString(1, tableName)
-            preparedStatement.setString(2, tableName)
+            preparedStatement.setString(1, tableNamePattern)
+            preparedStatement.setString(2, tableNamePattern)
+            if (StringUtils.isNotEmpty(schemaNamePattern)) {
+                preparedStatement.setString(3, schemaNamePattern)
+            }
 
             def primaryKeys = []
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -44,9 +52,9 @@ class PrimaryKeyAccessor implements Accessor {
                 primaryKey.name = resultSet.getString("constraint_name")
                 primaryKey.columnName = resultSet.getString("column_name")
                 primaryKey.javaType = TypeMapping.mappings[resultSet.getString("data_type")]
-                primaryKey.tableName = tableName
+                primaryKey.tableName = tableNamePattern
                 primaryKey.keySeq = resultSet.getString("key_seq")
-                primaryKey.qualifiedName = tableName.toLowerCase() +"." + primaryKey.columnName.toLowerCase()
+                primaryKey.qualifiedName = tableNamePattern.toLowerCase() +"." + primaryKey.columnName.toLowerCase()
                 primaryKeys.add(primaryKey)
             }
             return primaryKeys
@@ -56,9 +64,9 @@ class PrimaryKeyAccessor implements Accessor {
         return []
     }
 
-    GPrimaryKey[] getPrimaryKeysListFormMetaData(String tableName) {
+    GPrimaryKey[] getPrimaryKeysListFormMetaData(String catalog, String schemaNamePattern, String tableName) {
         DatabaseMetaData databaseMetaData = this.connection.getMetaData()
-        def result = databaseMetaData.getPrimaryKeys("", "public", tableName)
+        def result = databaseMetaData.getPrimaryKeys("", schemaNamePattern, tableName)
         def keys = []
         while (result.next()) {
             GPrimaryKey key = new GPrimaryKey()

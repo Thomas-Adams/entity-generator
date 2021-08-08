@@ -9,14 +9,14 @@ class TableAccessorTest {
     @Test
     void testGetTables() {
         TableAccessor access = new TableAccessor()
-        def result = access.getGTables("gender")
+        def result = access.getGTables("", "public", "gender", "")
         assert result!=null
     }
 
     @Test
     void testGetGTables() {
         TableAccessor access = new TableAccessor()
-        def result = access.getGTables()
+        def result = access.getGTables("", "public", "", "")
         assert !result.isEmpty()
     }
 }

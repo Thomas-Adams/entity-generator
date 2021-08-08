@@ -26,6 +26,7 @@ sourceSets {
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:3.0.7'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.23'
+    implementation group: 'com.oracle.database.jdbc', name: 'ojdbc10', version: '19.10.0.0'
     implementation group: 'org.apache.velocity', name: 'velocity', version: '1.7'
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
     implementation group: 'org.hibernate', name: 'hibernate-core', version: '5.5.4.Final'
