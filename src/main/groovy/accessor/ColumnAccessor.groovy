@@ -30,6 +30,7 @@ class ColumnAccessor implements Accessor {
             col.autoIncrement = result.getBoolean(GColumn.COLUMN_COL_IS_AUTOINCREMENT)
             col.type = result.getString(GColumn.COLUMN_COL_TYPE_NAME)
 			col.sqlType = result.getString(GColumn.COLUMN_COL_DATA_TYPE)	
+			col.columnDefinition = result.getString(GColumn.COLUMN_COL_COLUMN_DEF)
             col.javaType = TypeMapping.mappings.get(col.type)
             col.length = result.getInt(GColumn.COLUMN_COL_COLUMN_SIZE)
 			col.decimalDigits = result.getInt(GColumn.COLUMN_COL_DECIMAL_DIGITS)

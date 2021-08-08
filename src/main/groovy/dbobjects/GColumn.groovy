@@ -42,5 +42,7 @@ class GColumn {
     def qualifiedName
 	def decimalDigits
 	def sqlType
+	def columnDefinition
+	
 
 }
