@@ -1,7 +1,12 @@
 package utils
 
+import dbobjects.DbTypes
+import dbobjects.GColumn
+
 import java.time.LocalDate
 import java.time.LocalDateTime
+
+import org.apache.commons.lang3.StringUtils
 
 class TypeMapping {
 
@@ -25,5 +30,37 @@ class TypeMapping {
             "bool" : "Boolean",
             "text" : "String"
     ]
+
+    public static final oracleMappings = [
+            "varchar2" : "String",
+            "char" : "String",
+            "number" : "BigDecimal",
+            "timestamp" : "java.sql.Timestamp",
+            "date": "java.sql.Date",
+            "nclob": "String",
+            "clob": "String",
+            "blob": "byte[]",
+    ]
+
+    public static String guessJavaType(GColumn column, DbTypes dbType) {
+		if (dbType==DbTypes.POSTGRESQL) {
+			return mappings.get(column.type)
+		} 
+		String javaType = oracleMappings.get(column.type)
+		if (StringUtils.isNotEmpty(javaType) && "BigDecimal".equalsIgnoreCase(javaType)) {
+			if (column.length==1) {
+				return "Boolean"
+			}
+			if (column.decimalDigits>0) {
+				return "BigDecimal"
+			}
+			if (column.length==0) {
+				return "Long"
+			}
+		} 
+	}
+
+
+
 
 }

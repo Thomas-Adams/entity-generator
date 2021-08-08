@@ -7,16 +7,7 @@ import dbobjects.GUniqueKey
 
 trait MetaDataQuery extends Accessor{
 
-    DbTypes dbType;
 
-
-    DbTypes getDbType() {
-        return this.dbType
-    }
-
-    def setDbType(DbTypes types) {
-        this.dbType = types
-    }
 
     abstract GPrimaryKey[] getPrimaryKeys(String catalog, String schemaPattern, String tableNamePattern)
 

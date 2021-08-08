@@ -40,5 +40,7 @@ class GColumn {
     def foreign
     def autoIncrement
     def qualifiedName
+	def decimalDigits
+	def sqlType
 
 }

@@ -33,7 +33,6 @@ dependencies {
     implementation group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.5.4.Final'
     implementation group: 'org.hibernate', name: 'hibernate-tools', version: '5.5.3.Final'
 
-
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 

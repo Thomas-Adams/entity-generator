@@ -1,6 +1,9 @@
 package accessor
 
+import dbobjects.DbTypes
 import dbobjects.GColumn
+
+import org.apache.commons.lang3.StringUtils
 import org.apache.commons.text.CaseUtils
 import utils.TypeMapping
 
@@ -26,11 +29,16 @@ class ColumnAccessor implements Accessor {
             col.nullable = result.getBoolean(GColumn.COLUMN_COL_IS_NULLABLE)
             col.autoIncrement = result.getBoolean(GColumn.COLUMN_COL_IS_AUTOINCREMENT)
             col.type = result.getString(GColumn.COLUMN_COL_TYPE_NAME)
+			col.sqlType = result.getString(GColumn.COLUMN_COL_DATA_TYPE)	
             col.javaType = TypeMapping.mappings.get(col.type)
             col.length = result.getInt(GColumn.COLUMN_COL_COLUMN_SIZE)
+			col.decimalDigits = result.getInt(GColumn.COLUMN_COL_DECIMAL_DIGITS)
             col.qualifiedName = col.tableName.toLowerCase() + "." + col.name.toLowerCase()
             cols.add(col)
         }
         return cols;
     }
+	
+	
+	
 }
